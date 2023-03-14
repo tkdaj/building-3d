@@ -1,13 +1,20 @@
 import { PerspectiveCamera, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+import { Sky } from 'scene/sky';
+
 import './main.css';
 import { MainScene } from './MainScene';
 
 const scene = new MainScene();
 
+scene.background = new Sky();
+
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 2;
+camera.position.z = 8;
+camera.position.y = 5;
+camera.position.x = 3;
+camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
