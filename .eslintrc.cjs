@@ -40,6 +40,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-argument': 0,
     '@typescript-eslint/no-unsafe-assignment': 0,
     '@typescript-eslint/no-unsafe-member-access': 0,
+    '@typescript-eslint/no-dynamic-delete': 0,
     '@typescript-eslint/unbound-method': 0,
     '@typescript-eslint/no-unsafe-return': 0,
     '@typescript-eslint/no-non-null-assertion': 0,
