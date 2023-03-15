@@ -15,17 +15,19 @@ export class RibbedSteel extends Mesh<PlaneGeometry, MeshPhongMaterial> {
   constructor(public width: number, public height: number) {
     super();
     this.initializeGeometry();
-    this.initializeMaterial();
+    this.material = RibbedSteel.getRibbedSteelMaterial(this.width, this.height);
+    this.castShadow = true;
+    this.receiveShadow = true;
   }
 
   private initializeGeometry() {
     this.geometry = new PlaneGeometry(this.width, this.height, 1, 1);
   }
 
-  private initializeMaterial() {
+  public static getRibbedSteelMaterial(width: number, height: number) {
     const repeatCount = 7;
-    const repeatX = this.width * repeatCount;
-    const repeatY = this.height * repeatCount;
+    const repeatX = width * repeatCount;
+    const repeatY = height * repeatCount;
     const normalMap = loader.load(steelRibbedNormal);
     normalMap.wrapS = RepeatWrapping;
     normalMap.wrapT = RepeatWrapping;
@@ -38,9 +40,6 @@ export class RibbedSteel extends Mesh<PlaneGeometry, MeshPhongMaterial> {
       side: DoubleSide,
     });
     mat.normalMap!.repeat.set(repeatX, repeatY);
-    this.material = mat;
-
-    this.castShadow = true;
-    this.receiveShadow = true;
+    return mat;
   }
 }

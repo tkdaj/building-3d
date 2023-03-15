@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { state } from 'appState';
 import { Building } from 'scene/building';
 import { Ground } from 'scene/ground';
+import { Controls } from 'scene/gui';
 import { SceneLighting } from 'scene/lighting';
 import { Sky } from 'scene/sky';
 
@@ -18,6 +19,7 @@ function initializeObjects(scene: Scene) {
   scene.add(new SceneLighting());
   scene.add(new Building());
   scene.add(new Ground());
+  new Controls();
   scene.background = new Sky();
 }
 
@@ -43,9 +45,6 @@ function startScene() {
   }
   function animate() {
     requestAnimationFrame(animate);
-
-    // cube.rotation.x += 0.01;
-    // cube.rotation.y += 0.01;
 
     controls.update();
 
