@@ -1,5 +1,5 @@
 import type { Intersection } from 'three';
-import { Object3D } from 'three';
+import { MathUtils, Object3D } from 'three';
 
 import { state } from 'appState';
 import { eventManager } from 'eventManager';
@@ -36,14 +36,23 @@ export class Building extends Object3D {
     const closest = getClosestObjectBeingHoveredOn(Object.values(state.building.wallObjects));
     if (closest == null) return;
 
+    if (closest.object != tempDoor.parent) {
+      state.building.setRollupDoorParent(closest.object);
+    }
+
     // Now we need to show the door if it isn't already visible, and update its position
     tempDoor.visible = true;
-    tempDoor.position.set(closest.point.x, 0.75, closest.point.z);
-    tempDoor.rotation.set(
-      closest.object.rotation.x,
-      closest.object.rotation.y,
-      closest.object.rotation.z
+
+    const localVec = closest.object.worldToLocal(closest.point);
+    const xPos = MathUtils.clamp(
+      localVec.x,
+      -(closest.object.geometry.parameters.width / 2) + tempDoor.geometry.parameters.width / 2,
+      closest.object.geometry.parameters.width / 2 - tempDoor.geometry.parameters.width / 2
     );
+
+    const yPos = closest.object.geometry.parameters.height - tempDoor.geometry.parameters.height;
+
+    tempDoor.position.set(xPos, 0 - yPos / 2, 0);
   };
   private handleLeftClick = () => {
     const tempDoor = state.building.tempRollupDoor;

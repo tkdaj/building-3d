@@ -1,6 +1,7 @@
+import type { Object3D } from 'three';
 import { Color, PlaneGeometry, Quaternion, Vector3 } from 'three';
 
-import { Deg, Direction } from 'appConstants';
+import { Deg } from 'appConstants';
 import { state } from 'appState';
 import { getRadiansFromRoofPitch, getRoofSegmentData } from 'scene/building/building.utils';
 import { RibbedSteel } from 'scene/building/parts/RibbedSteel';
@@ -122,6 +123,17 @@ class BuildingState implements IBuildingState {
     state.sceneManager.scene.add(this._tempRollupDoor);
   };
 
+  setRollupDoorParent = (parent: Object3D) => {
+    if (this._tempRollupDoor == null) {
+      throw new Error('No temp door to set parent');
+    }
+
+    this._tempRollupDoor.position.set(0, 0, 0);
+    this._tempRollupDoor.rotation.set(0, 0, 0);
+
+    this._tempRollupDoor.parent = parent;
+  };
+
   saveTempDoor = (name: string) => {
     if (this._tempRollupDoor == null) {
       throw new Error('No temp door to save');
@@ -152,7 +164,7 @@ class BuildingState implements IBuildingState {
         width: this._length,
         height: this._wallHeight,
         setRotation(wall: Wall) {
-          wall.rotateOnWorldAxis(Direction.up, Deg[90]);
+          wall.rotation.set(0, Math.PI / 2, 0);
         },
       },
       {
@@ -161,7 +173,7 @@ class BuildingState implements IBuildingState {
         width: this._width,
         height: this._wallHeight,
         setRotation(wall: Wall) {
-          wall.rotateOnWorldAxis(Direction.up, Deg[180]);
+          wall.rotation.set(0, 0, 0);
         },
       },
       {
@@ -170,7 +182,7 @@ class BuildingState implements IBuildingState {
         width: this._length,
         height: this._wallHeight,
         setRotation(wall: Wall) {
-          wall.rotateOnWorldAxis(Direction.up, Deg[270]);
+          wall.rotation.set(0, Math.PI / 2, 0);
         },
       },
       {
@@ -179,7 +191,7 @@ class BuildingState implements IBuildingState {
         width: this._width,
         height: this._wallHeight,
         setRotation(wall: Wall) {
-          wall.rotateOnWorldAxis(Direction.up, 0);
+          wall.rotation.set(0, 0, 0);
         },
       },
     ];
