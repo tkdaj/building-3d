@@ -15,3 +15,8 @@ export function scrubObject<Obj extends Object3D>(obj: Obj) {
   }
   state.sceneManager.scene.remove(obj);
 }
+
+export function getBBox(geo: BufferGeometry) {
+  geo.computeBoundingBox();
+  return geo.boundingBox;
+}
