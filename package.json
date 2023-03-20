@@ -10,7 +10,7 @@
     "pretty-quick:staged": "pretty-quick --staged",
     "format": "prettier --write \"./**/*.{ts,tsx,js,jsx,json}\"",
     "check-format": "prettier --check \"./**/*.{ts,tsx,js,jsx,json}\"",
-    "lint": "TIMING=1 DEBUG=eslint:cli-engine eslint --ext .js,.jsx,.tsx,.ts ./ --cache",
+    "lint": "eslint --ext .js,.jsx,.tsx,.ts ./ --cache",
     "lint-ci": "npm run lint -- --max-warnings 0",
     "lint-fix": "npm run lint -- --fix",
     "tsc": "tsc --noEmit",

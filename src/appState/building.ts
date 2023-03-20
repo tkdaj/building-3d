@@ -12,7 +12,7 @@ import {
 } from 'scene/building/parts/RollupDoor';
 import { defaultRoofColor, Roof, RoofPitch } from 'scene/building/parts/Roof';
 import { defaultWallColor, Wall } from 'scene/building/parts/Wall';
-import { scrubObject } from 'utils/helperFunctions/threeObjects';
+import { cleanObject } from 'utils/helperFunctions/threeObjects';
 
 export interface WallPanelConfig {
   name: string;
@@ -147,12 +147,14 @@ class BuildingState implements IBuildingState {
     if (this._tempRollupDoor == null) {
       throw new Error('No temp door to cancel');
     }
-    scrubObject(this._tempRollupDoor);
+    cleanObject(this._tempRollupDoor);
+    state.sceneManager.scene.remove(this._tempRollupDoor);
     this._tempRollupDoor = null;
   };
 
   removeRollupDoorObject = (name: string) => {
-    scrubObject(this._rollupDoorObjects[name]);
+    cleanObject(this._rollupDoorObjects[name]);
+    state.sceneManager.scene.remove(this._rollupDoorObjects[name]);
     delete this._rollupDoorObjects[name];
   };
 
@@ -204,9 +206,8 @@ class BuildingState implements IBuildingState {
         newWall.name = config.name;
         config.setRotation(newWall);
       } else {
-        newWall.geometry.dispose();
+        cleanObject(newWall);
         newWall.geometry = new PlaneGeometry(config.width, config.height);
-        newWall.material.dispose();
         newWall.material = RibbedSteel.getRibbedSteelMaterial(config.width, config.height);
         newWall.material.color = new Color(defaultWallColor);
       }
