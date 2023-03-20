@@ -15,3 +15,5 @@ export const Direction = {
   east: new Vector3(1, 0, 0),
   west: new Vector3(-1, 0, 0),
 } as const;
+
+export const ftToM = 0.3048;

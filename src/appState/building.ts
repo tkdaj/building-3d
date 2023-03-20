@@ -1,10 +1,17 @@
 import { Color, PlaneGeometry, Quaternion, Vector3 } from 'three';
 
 import { Deg, Direction } from 'appConstants';
+import { state } from 'appState';
 import { getRadiansFromRoofPitch, getRoofSegmentData } from 'scene/building/building.utils';
 import { RibbedSteel } from 'scene/building/parts/RibbedSteel';
+import {
+  defaultRollupDoorHeight,
+  defaultRollupDoorWidth,
+  RollupDoor,
+} from 'scene/building/parts/RollupDoor';
 import { defaultRoofColor, Roof, RoofPitch } from 'scene/building/parts/Roof';
 import { defaultWallColor, Wall } from 'scene/building/parts/Wall';
+import { scrubObject } from 'utils/helperFunctions/threeObjects';
 
 export interface WallPanelConfig {
   name: string;
@@ -17,8 +24,9 @@ export type RoofPanelConfig = WallPanelConfig & { angle: number };
 
 type WallObjects = Record<string, Wall>;
 type RoofObjects = Record<string, Roof>;
+type RollupDoorObjects = Record<string, RollupDoor>;
 
-interface BuildingState {
+interface IBuildingState {
   width: number;
   length: number;
   wallHeight: number;
@@ -27,20 +35,28 @@ interface BuildingState {
   roofData: RoofPanelConfig[];
   wallObjects: WallObjects;
   roofObjects: RoofObjects;
+  rollupDoorObjects: RollupDoorObjects;
+  tempRollupDoor: RollupDoor | null;
 }
 
-class BuildingManager implements BuildingState {
+class BuildingState implements IBuildingState {
   private _wallsData: WallPanelConfig[] = [];
   private _roofData: RoofPanelConfig[] = [];
   private _wallObjects: WallObjects = {};
   private _roofObjects: RoofObjects = {};
+  private _rollupDoorObjects: RollupDoorObjects = {};
   private _width = 5;
   private _length = 10;
   private _wallHeight = 2;
   private _roofPitch = RoofPitch.Five;
+  private _tempRollupDoor: RollupDoor | null = null;
 
   constructor() {
     this.updateBuildingData();
+  }
+
+  get tempRollupDoor() {
+    return this._tempRollupDoor;
   }
 
   get wallObjects() {
@@ -49,6 +65,10 @@ class BuildingManager implements BuildingState {
 
   get roofObjects() {
     return this._roofObjects;
+  }
+
+  get rollupDoorObjects() {
+    return this._rollupDoorObjects;
   }
 
   get width() {
@@ -94,6 +114,35 @@ class BuildingManager implements BuildingState {
   get wallsData() {
     return this._wallsData;
   }
+
+  addRollupDoorObject = (width = defaultRollupDoorWidth, height = defaultRollupDoorHeight) => {
+    // create roolup door and add it to the scene, but hide it until the user hovers over a wall
+    this._tempRollupDoor = new RollupDoor(width, height);
+    this._tempRollupDoor.visible = false;
+    state.sceneManager.scene.add(this._tempRollupDoor);
+  };
+
+  saveTempDoor = (name: string) => {
+    if (this._tempRollupDoor == null) {
+      throw new Error('No temp door to save');
+    }
+    this._tempRollupDoor.name = name;
+    this._rollupDoorObjects[name] = this._tempRollupDoor;
+    this._tempRollupDoor = null;
+  };
+
+  cancelAddRollupDoorObject = () => {
+    if (this._tempRollupDoor == null) {
+      throw new Error('No temp door to cancel');
+    }
+    scrubObject(this._tempRollupDoor);
+    this._tempRollupDoor = null;
+  };
+
+  removeRollupDoorObject = (name: string) => {
+    scrubObject(this._rollupDoorObjects[name]);
+    delete this._rollupDoorObjects[name];
+  };
 
   private updateBuildingData = () => {
     this._wallsData = [
@@ -203,6 +252,6 @@ class BuildingManager implements BuildingState {
   };
 }
 
-const buildingManager = new BuildingManager();
+const building = new BuildingState();
 
-export { buildingManager };
+export { building };

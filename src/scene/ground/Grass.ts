@@ -1,9 +1,8 @@
-import { CircleGeometry, MeshPhongMaterial, RepeatWrapping, TextureLoader, Mesh } from 'three';
+import { CircleGeometry, MeshPhongMaterial, RepeatWrapping, Mesh } from 'three';
 
 import grass from 'assets/grass.jpg';
 import grassNormal from 'assets/grass_normal.jpg';
-
-const loader = new TextureLoader();
+import { textureLoader } from 'utils/loaders';
 
 export class Grass extends Mesh<CircleGeometry, MeshPhongMaterial> {
   constructor() {
@@ -14,8 +13,8 @@ export class Grass extends Mesh<CircleGeometry, MeshPhongMaterial> {
   private initializeMaterial() {
     const repeatX = 600;
     const repeatY = 600;
-    const normalMap = loader.load(grassNormal);
-    const texture = loader.load(grass);
+    const normalMap = textureLoader.load(grassNormal);
+    const texture = textureLoader.load(grass);
     normalMap.wrapS = RepeatWrapping;
     normalMap.wrapT = RepeatWrapping;
     texture.repeat.x = repeatX;

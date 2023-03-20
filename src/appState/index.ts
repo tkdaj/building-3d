@@ -1,9 +1,11 @@
-import { buildingManager } from './building';
+import { building } from './building';
 import { lights } from './lights';
+import { mouse } from './mouse';
 import { sceneManager } from './scene';
 
 export const state = {
   sceneManager,
-  buildingManager,
+  building,
   lights,
+  mouse,
 };

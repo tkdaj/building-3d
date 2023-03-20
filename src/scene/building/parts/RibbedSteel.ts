@@ -1,15 +1,7 @@
-import {
-  DoubleSide,
-  RepeatWrapping,
-  TextureLoader,
-  Mesh,
-  MeshPhongMaterial,
-  PlaneGeometry,
-} from 'three';
+import { DoubleSide, RepeatWrapping, Mesh, MeshPhongMaterial, PlaneGeometry } from 'three';
 
 import steelRibbedNormal from 'assets/steel_ribbed_normal.png';
-
-const loader = new TextureLoader();
+import { textureLoader } from 'utils/loaders';
 
 export class RibbedSteel extends Mesh<PlaneGeometry, MeshPhongMaterial> {
   constructor(public width: number, public height: number) {
@@ -28,9 +20,10 @@ export class RibbedSteel extends Mesh<PlaneGeometry, MeshPhongMaterial> {
     const repeatCount = 7;
     const repeatX = width * repeatCount;
     const repeatY = height * repeatCount;
-    const normalMap = loader.load(steelRibbedNormal);
+    const normalMap = textureLoader.load(steelRibbedNormal);
     normalMap.wrapS = RepeatWrapping;
     normalMap.wrapT = RepeatWrapping;
+    normalMap.repeat.set(repeatX, repeatY);
 
     const mat = new MeshPhongMaterial({
       normalMap,
@@ -39,7 +32,6 @@ export class RibbedSteel extends Mesh<PlaneGeometry, MeshPhongMaterial> {
       shadowSide: DoubleSide,
       side: DoubleSide,
     });
-    mat.normalMap!.repeat.set(repeatX, repeatY);
     return mat;
   }
 }
